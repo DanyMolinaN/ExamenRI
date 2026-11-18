@@ -183,6 +183,7 @@ flask
 flask-ngrok
 pyngrok
 jupyter
+gunicorn
 ```
 
 ---
@@ -304,6 +305,23 @@ NGROK_TOKEN = "YOUR_NGROK_TOKEN"
 ```
 
 Configure allí un token obtenido desde [ngrok Dashboard](https://dashboard.ngrok.com/get-started/your-authtoken). Nunca publique el token real dentro de repositorios o capturas.
+
+## 12.1 Despliegue en Render
+
+El servicio web para Render está separado del notebook en `app.py`. Render instalará
+las dependencias indicadas en `requirements.txt`, descargará NFCorpus y construirá
+los índices TF-IDF y BM25 al iniciar el servicio. Por eso, el primer arranque puede
+tardar más que los siguientes.
+
+1. Sube el proyecto a un repositorio de GitHub.
+2. En Render, selecciona **New > Blueprint** y conecta ese repositorio.
+3. Render detectará `render.yaml`; confirma la creación del servicio
+   `nfcorpus-search-api`.
+4. Cuando el despliegue termine, prueba `https://<tu-servicio>.onrender.com/health`
+   y envía las consultas a `https://<tu-servicio>.onrender.com/search`.
+
+No configures un token de ngrok para Render. El servicio usa el puerto asignado por
+Render y el endpoint `/health` como comprobación de disponibilidad.
 
 ---
 
